@@ -260,9 +260,9 @@
             `To: ${inputs.dateTo.value||''}%0A`+
             `Pickup: ${inputs.pickup.value||''}%0A`+
             `Notes: ${inputs.notes.value||''}`
-          );
-          // TODO: Replace with your own WhatsApp number
-          waBtn.href = `https://wa.me/18168001470?text=${text}`;
+          );// Replace with your own WhatsApp number (digits only, include country code)
+          waBtn.href = `https://wa.me/18168001470?text=${text}`;  
+
         }
         Object.values(inputs).forEach(i=>i.addEventListener('input', buildWA));
         buildWA();
