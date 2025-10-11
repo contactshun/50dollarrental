@@ -295,28 +295,30 @@
       return el;
     }
 
-    function Contact(){
-      const el = document.createElement('div');
-      el.className = 'grid';
-      const card = document.createElement('div');
-      card.className = 'card p24 col-6';
-      card.innerHTML = `
-        <h2>Contact us</h2>
-        <p class="muted">Fastest reply via WhatsApp. For email, we usually respond within 24 hours.</p>
-        <p><strong>WhatsApp:</strong> <a target="_blank" href="https://wa.me/18168001470">+1 (816) 800‑1470</a></p>
-        <p><strong>Email:</strong> <a href="mailto:50dollarrental@gmail.com?subject=Rental%20Inquiry">50dollarrental@gmail.com</a></p>
-        <p><strong>Pickup:</strong> Anywhere</p>
-      `;
-      const map = document.createElement('div');
-      map.className = 'card p24 col-6';
-      map.innerHTML = `
-        <h3>Service area</h3>
-        <p class="muted">Ames, IA and Des Moines, IA.</p>
-        <img alt="Ames/DSM map" style="width:100%;height:250px;object-fit:cover;border-radius:12px;border:1px solid #e5e7eb" src="https://images.unsplash.com/photo-1505764706515-aa95265c5abc?q=80&w=1200&auto=format&fit=crop"/>
-      `;
-      el.appendChild(card); el.appendChild(map);
-      return el;
-    }
+      function Contact(){
+        const el = document.createElement('div');
+        el.className = 'grid';
+        const card = document.createElement('div');
+        card.className = 'card p24 col-6';
+        card.innerHTML = `
+          <h2>Contact us</h2>
+          <p class="muted">Fastest reply via WhatsApp. For email, we usually respond within 24 hours.</p>
+          <p><strong>WhatsApp:</strong> <a target="_blank" href="https://wa.me/18168001470">+1 (816) 800-1470</a></p>
+          <p><strong>Email:</strong> <a href="mailto:50dollarrental@gmail.com?subject=Rental%20Inquiry">50dollarrental@gmail.com</a></p>
+          <p><strong>Pickup:</strong> Anywhere</p>
+        `;
+        const map = document.createElement('div');
+        map.className = 'card p24 col-6';
+        map.innerHTML = `
+          <h3>Service area</h3>
+          <p class="muted">Ames, IA and Des Moines, IA.</p>
+          <img alt="Ames/DSM map" style="width:100%;height:250px;object-fit:cover;border-radius:12px;border:1px solid #e5e7eb" src="https://images.unsplash.com/photo-1505764706515-aa95265c5abc?q=80&w=1200&auto=format&fit=crop"/>
+        `;
+        el.appendChild(card);
+        el.appendChild(map);
+        return el;
+      }
+
 
     function Admin(){
       const el = document.createElement('div');
