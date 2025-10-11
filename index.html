@@ -353,7 +353,7 @@
             const u = document.getElementById('admUser').value.trim();
             const p = document.getElementById('admPass').value.trim();
             // Demo: change the credentials below
-            if(u==='shunquinlan' && p==='Hondacivic2015'){ sessionStorage.setItem('adm_ok','1'); renderBody(); }
+            if(u.toLowerCase()==='Shunquinlan' && p==='Hondacivic2015'){ sessionStorage.setItem('adm_ok','1'); renderBody(); }
             else alert('Invalid credentials');
           });
         }
