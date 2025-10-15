@@ -4,228 +4,134 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>50DollarRental — Affordable. Reliable. Anytime.</title>
-  <meta name="description" content="50DollarRental — Book reliable cars for just $50/day. Simple, fast, and budget friendly." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta name="description" content="50DollarRental — Book reliable cars for just $50/day." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --brand: #0077FF;
-      --accent: #16A34A;
-      --bg: #F5F9FC;
-      --ink: #0F172A;
-      --muted: #64748B;
-      --card: #FFFFFF;
-      --ok: #22C55E;
-      --warn: #F87171;
-      --ring: rgba(0, 119, 255, 0.35);
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-    a{color:var(--brand);text-decoration:none}
-    .container{max-width:1080px;margin:0 auto;padding:20px}
-    header{position:sticky;top:0;background:rgba(246,247,251,.8);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid #e5e7eb;z-index:10}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
-    .brand{display:flex;gap:10px;align-items:center}
-    .logo{width:40px;height:40px;border-radius:12px;background:var(--brand);display:grid;place-items:center;color:#fff;font-weight:800}
-    .brand h1{font-size:18px;margin:0}
-    .links{display:flex;gap:14px;flex-wrap:wrap}
-    .links a{padding:8px 12px;border-radius:10px}
-    .links a.active,.links a:hover{background:#e8efff}
-    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;margin-top:28px}
-    .card{background:var(--card);border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.04)}
-    .p24{padding:24px}
-    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
-    .btn{appearance:none;border:1px solid #d0d7ff;background:#fff;color:var(--ink);padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer}
-    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
-    .btn.success{background:var(--ok);border-color:var(--ok);color:#fff}
-    .btn.danger{background:var(--warn);border-color:var(--warn);color:#fff}
-    .btn:focus{outline:3px solid var(--ring)}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-    .col-4{grid-column:span 4}
-    .col-6{grid-column:span 6}
-    .col-12{grid-column:span 12}
-    @media (max-width:900px){.hero{grid-template-columns:1fr}.col-4,.col-6{grid-column:span 12}}
-    .car{display:flex;gap:14px}
-    .car img{width:110px;height:72px;object-fit:cover;border-radius:10px;border:1px solid #e5e7eb}
-    .badge{font-size:12px;background:#eef2ff;color:#3730a3;padding:4px 8px;border-radius:999px;border:1px solid #dbeafe;display:inline-flex;gap:6px;align-items:center}
-    .muted{color:var(--muted)}
-    form{display:grid;gap:10px}
-    input,select,textarea{padding:10px 12px;border-radius:12px;border:1px solid #d1d5db;background:#fff}
-    input:focus,select:focus,textarea:focus{outline:3px solid var(--ring)}
-    label{font-weight:600}
-    .table{width:100%;border-collapse:collapse}
-    .table th,.table td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:left}
-    .pill{padding:4px 8px;border-radius:999px;border:1px solid #e5e7eb}
-    .pill.ok{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
-    .pill.pending{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
-    footer{margin:40px 0;color:var(--muted)}
-    .note{font-size:12px;color:var(--muted)}
+    body{font-family:Inter,system-ui;background:#f5f9fc;color:#0f172a;margin:0}
+    a{color:#0077ff;text-decoration:none}
+    header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:10px 20px;z-index:100}
+    .nav{max-width:1080px;margin:auto;display:flex;justify-content:space-between;align-items:center}
+    .logo{background:#0077ff;color:#fff;padding:8px 12px;border-radius:8px;font-weight:700}
+    main{max-width:1080px;margin:auto;padding:20px}
+    .card{background:#fff;padding:20px;margin-bottom:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+    input,select,textarea{width:100%;padding:10px;margin:5px 0;border:1px solid #ccc;border-radius:8px}
+    button{background:#0077ff;color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:600}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:8px;border-bottom:1px solid #e5e7eb;text-align:left}
+    footer{text-align:center;color:#64748b;font-size:13px;padding:20px}
   </style>
 </head>
 <body>
   <header>
-    <div class="container nav">
-      <div class="brand">
-        <div class="logo">$50</div>
-        <div>
-          <h1>50DollarRental</h1>
-          <div class="note">Affordable. Reliable. Anytime.</div>
-        </div>
-      </div>
-      <nav class="links" id="navLinks">
-        <a href="#/" data-route>Home</a>
-        <a href="#/cars" data-route>Cars</a>
-        <a href="#/book" data-route class="active">Book Now</a>
-        <a href="#/contact" data-route>Contact</a>
-        <a href="#/admin" data-route>Admin</a>
+    <div class="nav">
+      <div class="logo">$50</div>
+      <nav>
+        <a href="#/">Home</a> |
+        <a href="#/book">Book</a> |
+        <a href="#/admin">Admin</a>
       </nav>
     </div>
   </header>
 
-  <main class="container" id="app"></main>
-
-  <footer class="container">
-    <p class="note">© <span id="year"></span> 50DollarRental. Bookings are automatically synced to Google Sheets ✅</p>
-  </footer>
+  <main id="app"></main>
+  <footer>© 2025 50DollarRental — Data synced with Google Sheets</footer>
 
   <script>
-    // ✅ Your Google Sheet Web App URL
-    const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzsDdZnafs-X67sazR_KhuEKfgv1bp67zfbEYFRZhauOlV1rqZ93dWF1WBw9BrSvu0i/exec";
+    const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzrir5A-UvorazXwSn-NnDpkl7I9l_fwrdgeNEPpUkqnG8zz-2tKldL58BzEdMuXFFo/exec";
 
-    // --- Simple Router ---
-    const routes = { '/': Home, '/cars': Cars, '/book': Book, '/contact': Contact, '/admin': Admin };
+    const routes = { '/': Home, '/book': Book, '/admin': Admin };
+    window.addEventListener('hashchange', navigate);
+    window.addEventListener('load', navigate);
+
     function navigate(){
       const path = location.hash.slice(1) || '/';
-      const view = routes[path] || NotFound;
-      document.querySelectorAll('[data-route]').forEach(a=>{
-        const href = a.getAttribute('href');
-        a.classList.toggle('active', href === `#${path}`);
-      });
+      const view = routes[path] || Home;
       document.getElementById('app').innerHTML = '';
       document.getElementById('app').appendChild(view());
     }
-    window.addEventListener('hashchange', navigate);
-    window.addEventListener('load', ()=>{document.getElementById('year').textContent=(new Date).getFullYear();navigate();});
 
-    // --- Data and Storage ---
-    const CARS = [
-      { id:'prius', name:'Toyota Prius', price:50, img:'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1000&auto=format&fit=crop' },
-      { id:'cx5', name:'Mazda CX-5', price:50, img:'https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=1000&auto=format&fit=crop' },
-      { id:'civic', name:'Honda Civic', price:50, img:'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1000&auto=format&fit=crop' }
-    ];
-    const Store = {
-      key:'50dollarrental_bookings_v1',
-      all(){return JSON.parse(localStorage.getItem(this.key)||'[]');},
-      save(list){localStorage.setItem(this.key,JSON.stringify(list));},
-      add(b){const list=this.all();list.unshift(b);this.save(list);}
-    };
-
-    // --- Views ---
     function Home(){
       const el=document.createElement('div');
-      el.innerHTML=`<section class="hero">
-        <div class="card p24"><h2>Drive more, spend less — $50/day</h2>
-        <p class="muted">Transparent pricing, modern cars, instant booking.</p>
-        <div class="cta"><a class="btn primary" href="#/book">Book now</a><a class="btn" href="#/cars">See cars</a></div></div>
-        <div class="card p24"><h3>Popular picks</h3>${CARS.map(c=>`<div class="car"><img src="${c.img}"/><div><div class="badge">$${c.price}/day</div><strong>${c.name}</strong></div></div>`).join('<hr style="border:none;border-top:1px solid #eee;margin:12px 0">')}</div></section>`;
-      return el;
-    }
-
-    function Cars(){
-      const el=document.createElement('div');
-      el.className='grid';
-      CARS.forEach(c=>{
-        const card=document.createElement('div');
-        card.className='card p24 col-4';
-        card.innerHTML=`<img src="${c.img}" alt="${c.name}" style="width:100%;height:150px;object-fit:cover;border-radius:12px;border:1px solid #e5e7eb"/><h3>${c.name}</h3><div class="badge">$${c.price}/day</div><p class="muted">Automatic • Unlimited miles</p><a class="btn primary" href="#/book">Book ${c.name}</a>`;
-        el.appendChild(card);
-      });
+      el.className='card';
+      el.innerHTML=`<h2>Welcome to 50DollarRental</h2>
+      <p>Book reliable cars for just <b>$50/day</b>. Transparent pricing, modern cars, and quick service!</p>
+      <p><a href="#/book"><button>Book Now</button></a></p>`;
       return el;
     }
 
     function Book(){
       const el=document.createElement('div');
-      el.className='grid';
-      const formCard=document.createElement('div');
-      formCard.className='card p24 col-6';
-      formCard.innerHTML=`<h2>Book your ride</h2>
-      <form id="bookingForm">
-        <label>Car</label><select id="car">${CARS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select>
-        <label>Pick-up date & time</label><input type="datetime-local" id="dateFrom" required/>
-        <label>Drop-off date & time</label><input type="datetime-local" id="dateTo" required/>
-        <label>Name</label><input id="name" placeholder="Your name" required/>
-        <label>Phone (WhatsApp)</label><input id="phone" placeholder="+1 515-555-1234" required/>
-        <label>Pickup location</label><input id="pickup" placeholder="Ames or DSM airport"/>
-        <label>Notes</label><textarea id="notes" rows="3"></textarea>
-        <button class="btn primary" type="submit">Submit</button>
+      el.className='card';
+      el.innerHTML=`<h2>Book a Car</h2>
+      <form id="form">
+        <label>Full Name</label><input id="name" required>
+        <label>Phone (WhatsApp)</label><input id="phone" required>
+        <label>Car</label>
+        <select id="car"><option value="Mazda CX-5">Mazda CX-5</option><option value="Toyota Prius">Toyota Prius</option><option value="Honda Civic">Honda Civic</option></select>
+        <label>Pick-up Date & Time</label><input type="datetime-local" id="dateFrom" required>
+        <label>Drop-off Date & Time</label><input type="datetime-local" id="dateTo" required>
+        <label>Pick-up Location</label><input id="pickup">
+        <label>Notes</label><textarea id="notes"></textarea>
+        <button type="submit">Submit Booking</button>
       </form>`;
-      const side=document.createElement('div');
-      side.className='card p24 col-6';
-      side.innerHTML=`<h3>Flat $50/day</h3><p class="muted">Fuel not included. Refundable deposit may apply.</p>`;
-      el.appendChild(formCard);el.appendChild(side);
-
+      
       setTimeout(()=>{
-        const form=document.getElementById('bookingForm');
-        form.addEventListener('submit',async e=>{
+        document.getElementById('form').addEventListener('submit', async e=>{
           e.preventDefault();
-          const id='BKG-'+Math.random().toString(36).slice(2,8).toUpperCase();
-          const car=CARS.find(c=>c.id===car.value);
-          const payload={
-            id,
-            status:'Pending',
-            ts:new Date().toISOString(),
-            carId:car.id,
-            carName:car.name,
-            dateFrom:dateFrom.value,
-            dateTo:dateTo.value,
+          const data={
+            id:'BKG-'+Math.random().toString(36).slice(2,8).toUpperCase(),
             name:name.value.trim(),
             phone:phone.value.trim(),
-            pickup:pickup.value.trim(),
-            notes:notes.value.trim()
+            carName:car.value,
+            dateFrom:dateFrom.value,
+            dateTo:dateTo.value,
+            pickup:pickup.value,
+            notes:notes.value,
+            status:'Pending'
           };
-          Store.add(payload);
-          try{
-            await fetch(SHEET_WEBAPP_URL,{
-              method:"POST",
-              body:JSON.stringify(payload),
-              headers:{"Content-Type":"application/json"}
-            });
-            alert("✅ Booking submitted! Saved to Google Sheets.");
-          }catch(err){
-            alert("⚠️ Booking saved locally but failed to sync to Sheets.");
-            console.error(err);
-          }
+          const res=await fetch(SHEET_WEBAPP_URL,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(data)
+          });
+          const text=await res.text();
+          alert(text==='OK'?'✅ Booking saved to Google Sheets!':'❌ Something went wrong: '+text);
           location.hash='#/admin';
         });
       },0);
       return el;
     }
 
-    function Contact(){
-      const el=document.createElement('div');
-      el.innerHTML=`<div class="card p24"><h2>Contact us</h2>
-      <p>WhatsApp: <a href="https://wa.me/18168001470" target="_blank">+1 (816) 800-1470</a></p>
-      <p>Email: <a href="mailto:50dollarrental@gmail.com">50dollarrental@gmail.com</a></p></div>`;
-      return el;
-    }
-
     function Admin(){
       const el=document.createElement('div');
-      el.innerHTML=`<div class="card p24"><h2>Admin — Bookings (Local Copy)</h2>
-      <p class="note">Bookings also sync to Google Sheets automatically.</p>
-      <table class="table"><thead><tr><th>ID</th><th>Name</th><th>Car</th><th>Dates</th></tr></thead><tbody id="rows"></tbody></table></div>`;
+      el.className='card';
+      el.innerHTML=`<h2>Admin — Live Bookings</h2>
+      <table><thead><tr><th>Timestamp</th><th>Name</th><th>Phone</th><th>Car</th><th>From</th><th>To</th><th>Status</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="7">Loading...</td></tr></tbody></table>`;
+      
       setTimeout(()=>{
-        const rows=document.getElementById('rows');
-        const data=Store.all();
-        rows.innerHTML=data.map(b=>`<tr><td>${b.id}</td><td>${b.name}</td><td>${b.carName}</td><td>${b.dateFrom} → ${b.dateTo}</td></tr>`).join('');
+        fetch(SHEET_WEBAPP_URL)
+          .then(r=>r.json())
+          .then(data=>{
+            const rows=document.getElementById('rows');
+            if(!Array.isArray(data)||!data.length){
+              rows.innerHTML='<tr><td colspan=7>No data found</td></tr>';return;
+            }
+            rows.innerHTML=data.map(r=>`
+              <tr>
+                <td>${r.Timestamp||''}</td>
+                <td>${r.Name||''}</td>
+                <td>${r.Phone||''}</td>
+                <td>${r.Car||''||r.carName||''}</td>
+                <td>${r.From||r.dateFrom||''}</td>
+                <td>${r.To||r.dateTo||''}</td>
+                <td>${r.Status||r.status||''}</td>
+              </tr>`).join('');
+          })
+          .catch(err=>{
+            document.getElementById('rows').innerHTML='<tr><td colspan=7>Error: '+err+'</td></tr>';
+          });
       },0);
-      return el;
-    }
-
-    function NotFound(){
-      const el=document.createElement('div');
-      el.innerHTML=`<div class="card p24"><h2>404</h2><p>Page not found.</p></div>`;
       return el;
     }
   </script>
