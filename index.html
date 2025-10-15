@@ -4,79 +4,134 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>50DollarRental — Affordable. Reliable. Anytime.</title>
-  <meta name="description" content="50DollarRental — Book reliable cars for just $50/day." />
+  <meta name="description" content="50DollarRental — Book reliable cars for just $50/day. Simple, fast, and budget friendly." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body{font-family:Inter,system-ui;background:#f5f9fc;color:#0f172a;margin:0}
-    a{color:#0077ff;text-decoration:none}
-    header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:10px 20px;z-index:100}
-    .nav{max-width:1080px;margin:auto;display:flex;justify-content:space-between;align-items:center}
-    .logo{background:#0077ff;color:#fff;padding:8px 12px;border-radius:8px;font-weight:700}
-    main{max-width:1080px;margin:auto;padding:20px}
-    .card{background:#fff;padding:20px;margin-bottom:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
-    input,select,textarea{width:100%;padding:10px;margin:5px 0;border:1px solid #ccc;border-radius:8px}
-    button{background:#0077ff;color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:600}
-    table{width:100%;border-collapse:collapse;margin-top:10px}
-    th,td{padding:8px;border-bottom:1px solid #e5e7eb;text-align:left}
-    footer{text-align:center;color:#64748b;font-size:13px;padding:20px}
+    :root {
+      --brand: #0077FF;
+      --accent: #16A34A;
+      --bg: #F5F9FC;
+      --ink: #0F172A;
+      --muted: #64748B;
+      --card: #FFFFFF;
+      --ok: #22C55E;
+      --warn: #F87171;
+      --ring: rgba(0, 119, 255, 0.35);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+    a{color:var(--brand);text-decoration:none}
+    .container{max-width:1080px;margin:0 auto;padding:20px}
+    header{position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;z-index:10}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{width:40px;height:40px;border-radius:12px;background:var(--brand);display:grid;place-items:center;color:#fff;font-weight:800}
+    .brand h1{font-size:18px;margin:0}
+    .links{display:flex;gap:14px}
+    .links a{padding:8px 12px;border-radius:10px}
+    .links a.active,.links a:hover{background:#e8efff}
+    .card{background:var(--card);border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.04)}
+    .p24{padding:24px}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .col-4{grid-column:span 4}
+    .col-6{grid-column:span 6}
+    .col-12{grid-column:span 12}
+    @media(max-width:900px){.col-4,.col-6{grid-column:span 12}}
+    .muted{color:var(--muted)}
+    input,select,textarea{padding:10px 12px;border-radius:12px;border:1px solid #d1d5db;width:100%}
+    input:focus,select:focus,textarea:focus{outline:3px solid var(--ring)}
+    .btn{padding:10px 14px;border-radius:12px;border:1px solid var(--brand);background:var(--brand);color:#fff;font-weight:600;cursor:pointer}
+    .btn.secondary{background:#fff;color:var(--brand)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left}
+    footer{text-align:center;margin:30px 0;color:var(--muted)}
   </style>
 </head>
 <body>
   <header>
-    <div class="nav">
-      <div class="logo">$50</div>
-      <nav>
-        <a href="#/">Home</a> |
-        <a href="#/book">Book</a> |
-        <a href="#/admin">Admin</a>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo">$50</div>
+        <div><h1>50DollarRental</h1><div class="muted">Affordable. Reliable. Anytime.</div></div>
+      </div>
+      <nav class="links">
+        <a href="#/" data-route>Home</a>
+        <a href="#/cars" data-route>Cars</a>
+        <a href="#/book" data-route>Book Now</a>
+        <a href="#/admin" data-route>Admin</a>
       </nav>
     </div>
   </header>
 
-  <main id="app"></main>
-  <footer>© 2025 50DollarRental — Data synced with Google Sheets</footer>
+  <main class="container" id="app"></main>
+
+  <footer>© <span id="year"></span> 50DollarRental — Synced with Google Sheets</footer>
 
   <script>
-    const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzrir5A-UvorazXwSn-NnDpkl7I9l_fwrdgeNEPpUkqnG8zz-2tKldL58BzEdMuXFFo/exec";
+    const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxeuuRVC1oPyFb5MEq-Whtn1lukrJ9C9M6kNpbnrstcBalMSaGkXP0GaZ9X1a71GN1-/exec";
 
-    const routes = { '/': Home, '/book': Book, '/admin': Admin };
+    const routes = { '/': Home, '/cars': Cars, '/book': Book, '/admin': Admin };
     window.addEventListener('hashchange', navigate);
-    window.addEventListener('load', navigate);
+    window.addEventListener('load', ()=>{document.getElementById('year').textContent=(new Date).getFullYear();navigate();});
 
     function navigate(){
       const path = location.hash.slice(1) || '/';
       const view = routes[path] || Home;
       document.getElementById('app').innerHTML = '';
       document.getElementById('app').appendChild(view());
+      document.querySelectorAll('[data-route]').forEach(a=>{
+        const href=a.getAttribute('href');
+        a.classList.toggle('active',href===`#${path}`);
+      });
     }
+
+    const CARS=[
+      {name:'Toyota Prius',price:50,img:'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1000&auto=format&fit=crop'},
+      {name:'Mazda CX-5',price:50,img:'https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=1000&auto=format&fit=crop'},
+      {name:'Honda Civic',price:50,img:'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1000&auto=format&fit=crop'}
+    ];
 
     function Home(){
       const el=document.createElement('div');
-      el.className='card';
-      el.innerHTML=`<h2>Welcome to 50DollarRental</h2>
-      <p>Book reliable cars for just <b>$50/day</b>. Transparent pricing, modern cars, and quick service!</p>
-      <p><a href="#/book"><button>Book Now</button></a></p>`;
+      el.innerHTML=`<div class="card p24">
+        <h2>Drive more, spend less — $50/day</h2>
+        <p class="muted">Transparent pricing, modern cars, and instant booking.</p>
+        <a href="#/book" class="btn">Book Now</a>
+      </div>`;
+      return el;
+    }
+
+    function Cars(){
+      const el=document.createElement('div');
+      el.className='grid';
+      CARS.forEach(c=>{
+        const card=document.createElement('div');
+        card.className='card p24 col-4';
+        card.innerHTML=`<img src="${c.img}" style="width:100%;height:150px;object-fit:cover;border-radius:12px">
+        <h3>${c.name}</h3><p class="muted">$${c.price}/day</p><a href="#/book" class="btn secondary">Book ${c.name}</a>`;
+        el.appendChild(card);
+      });
       return el;
     }
 
     function Book(){
       const el=document.createElement('div');
-      el.className='card';
-      el.innerHTML=`<h2>Book a Car</h2>
-      <form id="form">
-        <label>Full Name</label><input id="name" required>
-        <label>Phone (WhatsApp)</label><input id="phone" required>
-        <label>Car</label>
-        <select id="car"><option value="Mazda CX-5">Mazda CX-5</option><option value="Toyota Prius">Toyota Prius</option><option value="Honda Civic">Honda Civic</option></select>
-        <label>Pick-up Date & Time</label><input type="datetime-local" id="dateFrom" required>
-        <label>Drop-off Date & Time</label><input type="datetime-local" id="dateTo" required>
-        <label>Pick-up Location</label><input id="pickup">
-        <label>Notes</label><textarea id="notes"></textarea>
-        <button type="submit">Submit Booking</button>
-      </form>`;
-      
+      el.className='card p24';
+      el.innerHTML=`
+        <h2>Book a Car</h2>
+        <form id="form">
+          <label>Name</label><input id="name" required>
+          <label>Phone (WhatsApp)</label><input id="phone" required>
+          <label>Car</label><select id="car">${CARS.map(c=>`<option>${c.name}</option>`).join('')}</select>
+          <label>Pick-up Date</label><input type="datetime-local" id="dateFrom" required>
+          <label>Drop-off Date</label><input type="datetime-local" id="dateTo" required>
+          <label>Pickup Location</label><input id="pickup">
+          <label>Notes</label><textarea id="notes"></textarea>
+          <button type="submit" class="btn">Submit</button>
+        </form>
+      `;
       setTimeout(()=>{
-        document.getElementById('form').addEventListener('submit', async e=>{
+        document.getElementById('form').addEventListener('submit',async e=>{
           e.preventDefault();
           const data={
             id:'BKG-'+Math.random().toString(36).slice(2,8).toUpperCase(),
@@ -89,14 +144,18 @@
             notes:notes.value,
             status:'Pending'
           };
-          const res=await fetch(SHEET_WEBAPP_URL,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(data)
-          });
-          const text=await res.text();
-          alert(text==='OK'?'✅ Booking saved to Google Sheets!':'❌ Something went wrong: '+text);
-          location.hash='#/admin';
+          try{
+            const res=await fetch(SHEET_WEBAPP_URL,{
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body:JSON.stringify(data)
+            });
+            const text=await res.text();
+            alert(text.includes("OK")?"✅ Booking saved to Google Sheets!":"⚠️ Error: "+text);
+            location.hash='#/admin';
+          }catch(err){
+            alert("❌ Network error: "+err);
+          }
         });
       },0);
       return el;
@@ -104,33 +163,35 @@
 
     function Admin(){
       const el=document.createElement('div');
-      el.className='card';
-      el.innerHTML=`<h2>Admin — Live Bookings</h2>
-      <table><thead><tr><th>Timestamp</th><th>Name</th><th>Phone</th><th>Car</th><th>From</th><th>To</th><th>Status</th></tr></thead>
-      <tbody id="rows"><tr><td colspan="7">Loading...</td></tr></tbody></table>`;
-      
+      el.className='card p24';
+      el.innerHTML=`
+        <h2>Admin — Live Bookings</h2>
+        <button id="refresh" class="btn secondary" style="margin-bottom:10px;">🔄 Refresh</button>
+        <table>
+          <thead><tr><th>Timestamp</th><th>ID</th><th>Name</th><th>Phone</th><th>Car</th><th>From</th><th>To</th><th>Status</th></tr></thead>
+          <tbody id="rows"><tr><td colspan="8">Loading...</td></tr></tbody>
+        </table>`;
       setTimeout(()=>{
-        fetch(SHEET_WEBAPP_URL)
+        const rows=document.getElementById('rows');
+        const load=()=>fetch(SHEET_WEBAPP_URL)
           .then(r=>r.json())
           .then(data=>{
-            const rows=document.getElementById('rows');
-            if(!Array.isArray(data)||!data.length){
-              rows.innerHTML='<tr><td colspan=7>No data found</td></tr>';return;
-            }
+            if(!Array.isArray(data)||!data.length){rows.innerHTML='<tr><td colspan=8>No records found</td></tr>';return;}
             rows.innerHTML=data.map(r=>`
               <tr>
                 <td>${r.Timestamp||''}</td>
-                <td>${r.Name||''}</td>
-                <td>${r.Phone||''}</td>
-                <td>${r.Car||''||r.carName||''}</td>
+                <td>${r.ID||''}</td>
+                <td>${r.Name||r.name||''}</td>
+                <td>${r.Phone||r.phone||''}</td>
+                <td>${r.Car||r.carName||''}</td>
                 <td>${r.From||r.dateFrom||''}</td>
                 <td>${r.To||r.dateTo||''}</td>
                 <td>${r.Status||r.status||''}</td>
               </tr>`).join('');
           })
-          .catch(err=>{
-            document.getElementById('rows').innerHTML='<tr><td colspan=7>Error: '+err+'</td></tr>';
-          });
+          .catch(err=>rows.innerHTML='<tr><td colspan=8>Error loading: '+err+'</td></tr>');
+        document.getElementById('refresh').onclick=load;
+        load();
       },0);
       return el;
     }
