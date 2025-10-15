@@ -7,7 +7,7 @@
   <meta name="description" content="Book reliable cars for just $50/day. Simple, fast, and budget friendly." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
+    :root{
       --brand:#0077FF;--accent:#16A34A;--bg:#F5F9FC;--ink:#0F172A;
       --muted:#64748B;--card:#fff;--ok:#22C55E;--warn:#F87171;--ring:rgba(0,119,255,.35)
     }
@@ -32,12 +32,14 @@
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
     .col-4{grid-column:span 4}.col-6{grid-column:span 6}.col-12{grid-column:span 12}
     @media(max-width:900px){.hero{grid-template-columns:1fr}.col-4,.col-6{grid-column:span 12}}
-    .muted{color:var(--muted)}label{font-weight:600}
+    .muted{color:var(--muted)}
+    label{font-weight:600}
     input,select,textarea{padding:10px 12px;border-radius:12px;border:1px solid #d1d5db;width:100%}
     input:focus,select:focus,textarea:focus{outline:3px solid var(--ring)}
     .table{width:100%;border-collapse:collapse}
     th,td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left}
-    footer{text-align:center;margin:40px 0;color:var(--muted)}.note{font-size:12px;color:var(--muted)}
+    footer{text-align:center;margin:40px 0;color:var(--muted)}
+    .note{font-size:12px;color:var(--muted)}
   </style>
 </head>
 <body>
@@ -59,29 +61,89 @@
 
 <main class="container" id="app"></main>
 
-<footer class="container"><p class="note">© <span id="year"></span> 50DollarRental — synced with Google Sheets.</p></footer>
+<footer class="container">
+  <p class="note">© <span id="year"></span> 50DollarRental — synced with Google Sheets.</p>
+</footer>
 
 <script>
-const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwlP0gebYsmhiBwr0fUAD0lNk5rGM2BJnLcMN2Tenk4wCOZGuKe9W3e1zbMtZ178uuU/exec";
+/* ---------- CONFIG ---------- */
+const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwbs0adQxCpTqBBeXaJOj_P8PwxnMvJLpqQ9yoyUcVP9jxGOn_s9nsb0FMhwYLqO0zt/exec";
 
-const routes={'/':Home,'/cars':Cars,'/book':Book,'/contact':Contact,'/admin':Admin};
+/* ---------- ROUTER ---------- */
+const routes = { '/': Home, '/cars': Cars, '/book': Book, '/contact': Contact, '/admin': Admin };
 function navigate(){
-  const path=location.hash.slice(1)||'/';
-  const view=routes[path]||NotFound;
+  const path = location.hash.slice(1) || '/';
+  const view = routes[path] || NotFound;
   document.querySelectorAll('[data-route]').forEach(a=>{
-    const href=a.getAttribute('href');a.classList.toggle('active',href===`#${path}`);
+    const href=a.getAttribute('href'); a.classList.toggle('active', href===`#${path}`);
   });
-  document.getElementById('app').innerHTML='';document.getElementById('app').appendChild(view());
+  const app = document.getElementById('app'); app.innerHTML=''; app.appendChild(view());
 }
-window.addEventListener('hashchange',navigate);
-window.addEventListener('load',()=>{document.getElementById('year').textContent=(new Date).getFullYear();navigate();});
+addEventListener('hashchange', navigate);
+addEventListener('load', ()=>{ document.getElementById('year').textContent=(new Date).getFullYear(); navigate(); });
 
-const CARS=[
-  {id:'prius',name:'Toyota Prius',price:50,img:'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1000&auto=format&fit=crop'},
-  {id:'cx5',name:'Mazda CX-5',price:50,img:'https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=1000&auto=format&fit=crop'},
-  {id:'civic',name:'Honda Civic',price:50,img:'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1000&auto=format&fit=crop'}
+/* ---------- DATA ---------- */
+const CARS = [
+  {id:'prius', name:'Toyota Prius', price:50, img:'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1000&auto=format&fit=crop'},
+  {id:'cx5', name:'Mazda CX-5', price:50, img:'https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=1000&auto=format&fit=crop'},
+  {id:'civic', name:'Honda Civic', price:50, img:'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1000&auto=format&fit=crop'}
 ];
 
+/* ---------- HELPERS (no-CORS POST + JSONP GET) ---------- */
+// Hidden-form fallback (always works cross-origin)
+function postViaHiddenForm(fields){
+  const sink = document.createElement('iframe');
+  sink.name = 'gsheetSink';
+  sink.style.display = 'none';
+  document.body.appendChild(sink);
+
+  const f = document.createElement('form');
+  f.action = SHEET_WEBAPP_URL;
+  f.method = 'POST';
+  f.target = 'gsheetSink';
+  for (const [k,v] of Object.entries(fields)) {
+    const input = document.createElement('input');
+    input.type = 'hidden'; input.name = k; input.value = v ?? '';
+    f.appendChild(input);
+  }
+  document.body.appendChild(f);
+  f.submit();
+  sink.onload = ()=>{
+    alert('✅ Booking sent!');
+    location.hash = '#/admin';
+    setTimeout(()=>{ sink.remove(); f.remove(); }, 500);
+  };
+}
+
+// Try urlencoded fetch first (no preflight). If blocked by CSP, fall back to hidden form.
+async function sendBooking(data){
+  try{
+    const body = new URLSearchParams(data);
+    const res = await fetch(SHEET_WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+      body
+    });
+    const txt = await res.text();
+    if (!res.ok || !txt.includes('OK')) throw new Error('Send failed: '+txt);
+    alert('✅ Booking saved!');
+    location.hash = '#/admin';
+  }catch(err){
+    // Fallback — never blocked by CORS/CSP
+    postViaHiddenForm(data);
+  }
+}
+
+// JSONP loader for Admin (no CORS required)
+function loadAdminJSONP(render){
+  const cb = 'gs_cb_' + Math.random().toString(36).slice(2);
+  window[cb] = (rows)=>{ try{ render(rows); } finally{ delete window[cb]; s.remove(); } };
+  const s = document.createElement('script');
+  s.src = SHEET_WEBAPP_URL + '?callback=' + cb;
+  document.body.appendChild(s);
+}
+
+/* ---------- VIEWS ---------- */
 function Home(){
   const el=document.createElement('div');
   el.innerHTML=`
@@ -96,23 +158,22 @@ function Home(){
       </div>
       <div class="card p24">
         <h3>Popular picks</h3>
-        ${CARS.map(c=>`<div style="display:flex;gap:10px;margin-bottom:10px;">
-          <img src="${c.img}" style="width:110px;height:70px;object-fit:cover;border-radius:8px;border:1px solid #eee">
-          <div><b>${c.name}</b><div class="muted">$${c.price}/day</div></div>
-        </div>`).join('')}
+        ${CARS.map(c=>`
+          <div style="display:flex;gap:10px;margin-bottom:10px;">
+            <img src="${c.img}" style="width:110px;height:70px;object-fit:cover;border-radius:8px;border:1px solid #eee" alt="${c.name}">
+            <div><b>${c.name}</b><div class="muted">$${c.price}/day</div></div>
+          </div>`).join('')}
       </div>
     </section>`;
   return el;
 }
 
 function Cars(){
-  const el=document.createElement('div');
-  el.className='grid';
+  const el=document.createElement('div'); el.className='grid';
   CARS.forEach(c=>{
-    const card=document.createElement('div');
-    card.className='card p24 col-4';
+    const card=document.createElement('div'); card.className='card p24 col-4';
     card.innerHTML=`
-      <img src="${c.img}" style="width:100%;height:150px;object-fit:cover;border-radius:12px">
+      <img src="${c.img}" alt="${c.name}" style="width:100%;height:150px;object-fit:cover;border-radius:12px">
       <h3>${c.name}</h3><p class="muted">$${c.price}/day</p>
       <a href="#/book" class="btn secondary">Book ${c.name}</a>`;
     el.appendChild(card);
@@ -121,9 +182,9 @@ function Cars(){
 }
 
 function Book(){
-  const el=document.createElement('div');el.className='grid';
-  const formCard=document.createElement('div');
-  formCard.className='card p24 col-6';
+  const el=document.createElement('div'); el.className='grid';
+
+  const formCard=document.createElement('div'); formCard.className='card p24 col-6';
   formCard.innerHTML=`
     <h2>Book your ride</h2>
     <form id="bookingForm">
@@ -135,99 +196,95 @@ function Book(){
       <label>Phone (WhatsApp)</label><input id="phone" required>
       <label>Pickup Location</label><input id="pickup">
       <label>Notes</label><textarea id="notes"></textarea>
-      <button type="submit" class="btn">Submit</button>
+      <button class="btn" type="submit">Submit</button>
     </form>`;
   el.appendChild(formCard);
 
-  const side=document.createElement('div');
-  side.className='card p24 col-6';
+  const side=document.createElement('div'); side.className='card p24 col-6';
   side.innerHTML=`
     <h3>How pricing works</h3>
     <p class="muted">Flat $50/day. Fuel not included. ID required.</p>
-    <hr><p class="muted">Message us directly for faster response.</p>
-    <a href="https://wa.me/18168001470" target="_blank" class="btn success">Chat on WhatsApp</a>`;
+    <hr>
+    <p class="muted">Message us directly for faster response.</p>
+    <a class="btn" style="background:var(--ok);border-color:var(--ok)" target="_blank" href="https://wa.me/18168001470">Chat on WhatsApp</a>`;
   el.appendChild(side);
 
+  // Attach submit
   setTimeout(()=>{
-    document.getElementById('bookingForm').addEventListener('submit',async e=>{
+    document.getElementById('bookingForm').addEventListener('submit', (e)=>{
       e.preventDefault();
-      const car=document.getElementById('car').value;
-      const data={
+      const data = {
         id:'BKG-'+Math.random().toString(36).slice(2,8).toUpperCase(),
         name:document.getElementById('name').value,
         phone:document.getElementById('phone').value,
-        carName:car,
+        carName:document.getElementById('car').value,
         dateFrom:document.getElementById('dateFrom').value,
         dateTo:document.getElementById('dateTo').value,
         pickup:document.getElementById('pickup').value,
         notes:document.getElementById('notes').value,
         status:'Pending'
       };
-      try{
-        const res=await fetch(SHEET_WEBAPP_URL,{
-          method:'POST',
-          mode:'cors',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify(data)
-        });
-        const txt=await res.text();
-        alert(txt.includes("OK")?"✅ Booking saved!":"⚠️ Error: "+txt);
-        location.hash='#/admin';
-      }catch(err){alert("❌ "+err);}
+      sendBooking(data);
     });
   },0);
+
   return el;
 }
 
 function Contact(){
-  const el=document.createElement('div');
-  el.className='grid';
-  const c1=document.createElement('div');c1.className='card p24 col-6';
-  c1.innerHTML=`<h2>Contact us</h2><p class="muted">Quickest reply via WhatsApp or email.</p>
-  <p><b>WhatsApp:</b> <a target="_blank" href="https://wa.me/18168001470">+1 (816) 800-1470</a></p>
-  <p><b>Email:</b> <a href="mailto:50dollarrental@gmail.com">50dollarrental@gmail.com</a></p>`;
-  const c2=document.createElement('div');c2.className='card p24 col-6';
-  c2.innerHTML=`<h3>Service area</h3><p class="muted">Ames & Des Moines, Iowa.</p>
-  <img src="https://images.unsplash.com/photo-1505764706515-aa95265c5abc?q=80&w=1200&auto=format&fit=crop" style="width:100%;border-radius:12px">`;
-  el.appendChild(c1);el.appendChild(c2);return el;
+  const el=document.createElement('div'); el.className='grid';
+  const c1=document.createElement('div'); c1.className='card p24 col-6';
+  c1.innerHTML=`
+    <h2>Contact us</h2>
+    <p class="muted">Quickest reply via WhatsApp or email.</p>
+    <p><b>WhatsApp:</b> <a target="_blank" href="https://wa.me/18168001470">+1 (816) 800-1470</a></p>
+    <p><b>Email:</b> <a href="mailto:50dollarrental@gmail.com">50dollarrental@gmail.com</a></p>`;
+  const c2=document.createElement('div'); c2.className='card p24 col-6';
+  c2.innerHTML=`
+    <h3>Service area</h3>
+    <p class="muted">Ames & Des Moines, Iowa.</p>
+    <img src="https://images.unsplash.com/photo-1505764706515-aa95265c5abc?q=80&w=1200&auto=format&fit=crop"
+         alt="Ames & Des Moines" style="width:100%;border-radius:12px">`;
+  el.appendChild(c1); el.appendChild(c2); return el;
 }
 
 function Admin(){
-  const el=document.createElement('div');
-  el.className='card p24';
+  const el=document.createElement('div'); el.className='card p24';
   el.innerHTML=`
     <h2>Admin — Live Bookings</h2>
     <button id="refresh" class="btn secondary">🔄 Refresh</button>
-    <table class="table"><thead>
-      <tr><th>Time</th><th>ID</th><th>Name</th><th>Phone</th><th>Car</th><th>From</th><th>To</th><th>Status</th></tr>
-    </thead><tbody id="rows"><tr><td colspan="8">Loading...</td></tr></tbody></table>`;
+    <table class="table">
+      <thead><tr>
+        <th>Time</th><th>ID</th><th>Name</th><th>Phone</th><th>Car</th><th>From</th><th>To</th><th>Status</th>
+      </tr></thead>
+      <tbody id="rows"><tr><td colspan="8">Loading…</td></tr></tbody>
+    </table>`;
   setTimeout(()=>{
-    const rows=document.getElementById('rows');
-    const load=()=>fetch(SHEET_WEBAPP_URL)
-      .then(r=>r.json())
-      .then(data=>{
-        if(!Array.isArray(data)||!data.length){rows.innerHTML='<tr><td colspan=8>No bookings found</td></tr>';return;}
-        rows.innerHTML=data.map(r=>`
-          <tr>
-            <td>${r.Timestamp||''}</td>
-            <td>${r.ID||r.id||''}</td>
-            <td>${r.Name||r.name||''}</td>
-            <td><a target="_blank" href="https://wa.me/${(r.Phone||r.phone||'').replace(/\\D/g,'')}">${r.Phone||r.phone||''}</a></td>
-            <td>${r.Car||r.carName||''}</td>
-            <td>${r.From||r.dateFrom||''}</td>
-            <td>${r.To||r.dateTo||''}</td>
-            <td>${r.Status||r.status||''}</td>
-          </tr>`).join('');
-      })
-      .catch(err=>rows.innerHTML='<tr><td colspan=8>Error: '+err+'</td></tr>');
-    document.getElementById('refresh').onclick=load;load();
+    const rows = document.getElementById('rows');
+    const render = (data)=>{
+      if(!Array.isArray(data)||!data.length){ rows.innerHTML='<tr><td colspan="8">No bookings yet</td></tr>'; return; }
+      rows.innerHTML = data.map(r=>`
+        <tr>
+          <td>${r.Timestamp??''}</td>
+          <td>${r.ID??''}</td>
+          <td>${r.Name??''}</td>
+          <td><a target="_blank" href="https://wa.me/${(r.Phone??'').replace(/\D/g,'')}">${r.Phone??''}</a></td>
+          <td>${r.Car??''}</td>
+          <td>${r.From??''}</td>
+          <td>${r.To??''}</td>
+          <td>${r.Status??''}</td>
+        </tr>`).join('');
+    };
+    const load = ()=> loadAdminJSONP(render);
+    document.getElementById('refresh').onclick = load;
+    load();
   },0);
   return el;
 }
 
 function NotFound(){
   const el=document.createElement('div');
-  el.innerHTML=`<div class="card p24"><h2>404 — Not Found</h2><p class="muted">Page not found.</p></div>`;
+  el.innerHTML=`<div class="card p24"><h2>404 — Not found</h2><p class="muted">That page doesn’t exist.</p></div>`;
   return el;
 }
 </script>
