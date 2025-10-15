@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>50DollarRental — Affordable. Reliable. Anytime.</title>
-  <meta name="description" content="50DollarRental — Book reliable cars for just $50/day. Simple, fast, and budget friendly." />
+  <meta name="description" content="Book reliable cars for just $50/day. Simple, fast, and budget friendly." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -62,7 +62,7 @@
 <footer class="container"><p class="note">© <span id="year"></span> 50DollarRental — synced with Google Sheets.</p></footer>
 
 <script>
-const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwByvsCErL5LpPvKRCEvvcKJWBHWMnNRrYt5VgkQ4yfnU788bF9zv0C3EUE1VE6oBDA/exec";
+const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyawkBPsJAuXZFhSrBXVAY_kthtkE1fyocMKfBEWpgqIUVSfGyhYVbYjW5XaZmhWK4C/exec";
 
 const routes={'/':Home,'/cars':Cars,'/book':Book,'/contact':Contact,'/admin':Admin};
 function navigate(){
@@ -165,10 +165,13 @@ function Book(){
       };
       try{
         const res=await fetch(SHEET_WEBAPP_URL,{
-          method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)
+          method:'POST',
+          mode:'cors',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(data)
         });
-        const t=await res.text();
-        alert(t.includes("OK")?"✅ Booking saved!":"⚠️ Error: "+t);
+        const txt=await res.text();
+        alert(txt.includes("OK")?"✅ Booking saved!":"⚠️ Error: "+txt);
         location.hash='#/admin';
       }catch(err){alert("❌ "+err);}
     });
@@ -200,20 +203,23 @@ function Admin(){
     </thead><tbody id="rows"><tr><td colspan="8">Loading...</td></tr></tbody></table>`;
   setTimeout(()=>{
     const rows=document.getElementById('rows');
-    const load=()=>fetch(SHEET_WEBAPP_URL).then(r=>r.json()).then(data=>{
-      if(!Array.isArray(data)||!data.length){rows.innerHTML='<tr><td colspan=8>No bookings found</td></tr>';return;}
-      rows.innerHTML=data.map(r=>`
-        <tr>
-          <td>${r.Timestamp||''}</td>
-          <td>${r.ID||''}</td>
-          <td>${r.Name||''}</td>
-          <td><a target="_blank" href="https://wa.me/${(r.Phone||'').replace(/\\D/g,'')}">${r.Phone||''}</a></td>
-          <td>${r.Car||r.carName||''}</td>
-          <td>${r.From||r.dateFrom||''}</td>
-          <td>${r.To||r.dateTo||''}</td>
-          <td>${r.Status||r.status||''}</td>
-        </tr>`).join('');
-    }).catch(err=>rows.innerHTML='<tr><td colspan=8>Error: '+err+'</td></tr>');
+    const load=()=>fetch(SHEET_WEBAPP_URL)
+      .then(r=>r.json())
+      .then(data=>{
+        if(!Array.isArray(data)||!data.length){rows.innerHTML='<tr><td colspan=8>No bookings found</td></tr>';return;}
+        rows.innerHTML=data.map(r=>`
+          <tr>
+            <td>${r.Timestamp||''}</td>
+            <td>${r.ID||r.id||''}</td>
+            <td>${r.Name||r.name||''}</td>
+            <td><a target="_blank" href="https://wa.me/${(r.Phone||r.phone||'').replace(/\\D/g,'')}">${r.Phone||r.phone||''}</a></td>
+            <td>${r.Car||r.carName||''}</td>
+            <td>${r.From||r.dateFrom||''}</td>
+            <td>${r.To||r.dateTo||''}</td>
+            <td>${r.Status||r.status||''}</td>
+          </tr>`).join('');
+      })
+      .catch(err=>rows.innerHTML='<tr><td colspan=8>Error: '+err+'</td></tr>');
     document.getElementById('refresh').onclick=load;load();
   },0);
   return el;
