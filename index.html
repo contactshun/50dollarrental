@@ -70,6 +70,27 @@ async function postForm(data){try{const body=new URLSearchParams(data);const r=a
 function postViaHiddenForm(fields){const sink=document.createElement('iframe');sink.name='gsink';sink.style.display='none';document.body.appendChild(sink);
  const f=document.createElement('form');f.action=SHEET_WEBAPP_URL;f.method='POST';f.target='gsink';Object.entries(fields).forEach(([k,v])=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v??'';f.appendChild(i);});document.body.appendChild(f);f.submit();return new Promise(res=>{sink.onload=()=>{setTimeout(()=>{sink.remove();f.remove();res(true);},200);};});}
 
+/* ---- WhatsApp helpers (for "Approve") ---- */
+function cleanPhoneForWA(raw){return (raw||"").toString().replace(/^'/,"").replace(/\D/g,"");}
+function daysBetween(start,end){if(!start||!end)return 1;const ms=new Date(end)-new Date(start);return Math.max(1,Math.ceil(ms/86400000));}
+function buildApprovalMessage(row){
+  const daily=50; const d=daysBetween(row.From,row.To); const total=d*daily;
+  return [
+    `Hi ${row.Name||""}, your 50DollarRental booking is *Approved* ✅`,
+    ``,
+    `Booking ID: ${row.ID||""}`,
+    `Car: ${row.Car||""}`,
+    `Pick-up: ${row.From||""}`,
+    `Drop-off: ${row.To||""}`,
+    `Pickup location: ${row.Pickup||"TBD"}`,
+    `Status: Approved`,
+    ``,
+    `Estimated total: $${total} ($${daily}/day)`,
+    ``,
+    `Reply to confirm. — 50DollarRental`
+  ].join("\n");
+}
+
 /* ---- Views ---- */
 function Home(){const el=document.createElement('div');el.innerHTML=`
 <section class="hero">
@@ -142,7 +163,6 @@ function Book(){const el=document.createElement('div');el.className='grid';
       notes:document.getElementById('notes').value.trim(),
       status:'Pending'
     };
-    // Try fetch, fall back to hidden form for CSP/CORS
     const ok = await postForm(data) || await postViaHiddenForm(data);
     if (ok) { alert('✅ Booking saved!'); location.hash='#/admin'; }
     else { alert('❌ Could not send. Please try again.'); }
@@ -171,17 +191,20 @@ function Admin(){const el=document.createElement('div');el.className='card p24';
     <tbody id="rows"><tr><td colspan="9">Loading…</td></tr></tbody>
   </table>`;
   setTimeout(()=>{const rows=document.getElementById('rows');
+    let lastData=[];
+
     function paint(data){
-      if(!Array.isArray(data)||!data.length){rows.innerHTML='<tr><td colspan="9">No bookings yet</td></tr>';return;}
-      rows.innerHTML=data.map(r=>{
-        const phone = (r.Phone||'').toString().replace(/^'/,''); // strip leading apostrophe for display
-        const phoneDigits = phone.replace(/\D/g,'');
-        const status = r.Status||'';
+      lastData = Array.isArray(data)?data:[];
+      if(!lastData.length){rows.innerHTML='<tr><td colspan="9">No bookings yet</td></tr>';return;}
+      rows.innerHTML=lastData.map(r=>{
+        const phoneDisp=(r.Phone||'').toString().replace(/^'/,'');
+        const phoneDigits=cleanPhoneForWA(r.Phone);
+        const status=r.Status||'Pending';
         return `<tr>
           <td>${r.Timestamp||''}</td>
           <td>${r.ID||''}</td>
           <td>${r.Name||''}</td>
-          <td><a target="_blank" href="https://wa.me/${phoneDigits}">${phone||''}</a></td>
+          <td><a target="_blank" href="https://wa.me/${phoneDigits}">${phoneDisp||''}</a></td>
           <td>${r.Car||''}</td>
           <td>${r.From||''}</td>
           <td>${r.To||''}</td>
@@ -193,17 +216,34 @@ function Admin(){const el=document.createElement('div');el.className='card p24';
         </tr>`;
       }).join('');
     }
-    function load(){loadJSONP(SHEET_WEBAPP_URL, paint);}
+    function load(){loadJSONP(SHEET_WEBAPP_URL,paint);}
     load(); document.getElementById('refresh').onclick=load;
 
     rows.addEventListener('click', async (e)=>{
       const b=e.target.closest('button'); if(!b) return;
       const act=b.getAttribute('data-act');
-      if(act==='wa'){ const p=b.getAttribute('data-phone'); window.open('https://wa.me/'+p,'_blank'); return; }
+
+      if(act==='wa'){
+        const p=b.getAttribute('data-phone');
+        window.open('https://wa.me/'+p,'_blank'); return;
+      }
       if(act==='approve'){
         const id=b.getAttribute('data-id');
-        const ok = await postForm({action:'updateStatus',id,status:'Approved'}) || await postViaHiddenForm({action:'updateStatus',id,status:'Approved'});
-        if(ok) load();
+        b.disabled=true; b.textContent='Approving…';
+        const ok = await postForm({action:'updateStatus',id,status:'Approved'})
+               || await postViaHiddenForm({action:'updateStatus',id,status:'Approved'});
+        if(ok){
+          const row=lastData.find(r=>(r.ID||'')===id)||{};
+          const phoneDigits=cleanPhoneForWA(row.Phone);
+          if(phoneDigits.length>=7){
+            const msg=encodeURIComponent(buildApprovalMessage(row));
+            window.open(`https://wa.me/${phoneDigits}?text=${msg}`,'_blank');
+          }
+          load();
+        }else{
+          alert('Could not approve — please try again.');
+        }
+        b.disabled=false; b.textContent='Approve';
       }
     });
   },0);
