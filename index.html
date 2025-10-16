@@ -76,7 +76,7 @@ function daysBetween(start,end){if(!start||!end)return 1;const ms=new Date(end)-
 function buildApprovalMessage(row){
   const daily=50; const d=daysBetween(row.From,row.To); const total=d*daily;
   return [
-    `Hi ${row.Name||""}, your 50DollarRental booking is *Approved* ✅`,
+    `Hi ${row.Name||""}, your 50DollarRental booking is *Approved* `,
     ``,
     `Booking ID: ${row.ID||""}`,
     `Car: ${row.Car||""}`,
@@ -87,7 +87,7 @@ function buildApprovalMessage(row){
     ``,
     `Estimated total: $${total} ($${daily}/day)`,
     ``,
-    `Reply to confirm. — 50DollarRental`
+    `Reply to confirm. Thank you for choosing 50dollarrental service`
   ].join("\n");
 }
 
