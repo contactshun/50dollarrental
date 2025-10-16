@@ -50,6 +50,9 @@
 <script>
 /* ---- CONFIG ---- */
 const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzBPuvGk7SkiEBHUKDYHVM_SQgE0p6E2qO-rFUGYkUCT4N4Xev9xraEdZzvuh2H5uk6/exec";
+const ADMIN_USER = "shunqinlan";
+const ADMIN_PASS = "Hondacivic2015";
+const ADMIN_SESSION_KEY = "adm_session_ok_v1";
 
 /* ---- Router ---- */
 const routes={'/':Home,'/cars':Cars,'/book':Book,'/contact':Contact,'/admin':Admin};
@@ -164,7 +167,7 @@ function Book(){const el=document.createElement('div');el.className='grid';
       status:'Pending'
     };
     const ok = await postForm(data) || await postViaHiddenForm(data);
-    if (ok) { alert('✅ Booking saved!'); location.hash='#/admin'; }
+    if (ok) { alert('✅ Booking saved! We will contact you shortly.'); /* No redirect to admin */ }
     else { alert('❌ Could not send. Please try again.'); }
   });},0);
   return el;
@@ -181,72 +184,129 @@ function Contact(){const el=document.createElement('div');el.className='grid';
   el.appendChild(c1);el.appendChild(c2);return el;
 }
 
-function Admin(){const el=document.createElement('div');el.className='card p24';
-  el.innerHTML=`<h2>Admin — Live Bookings</h2>
-  <div style="display:flex;gap:10px;margin-bottom:12px">
-    <button id="refresh" class="btn secondary">🔄 Refresh</button>
-  </div>
-  <table class="table">
-    <thead><tr><th>Time</th><th>ID</th><th>Name</th><th>Phone</th><th>Car</th><th>From</th><th>To</th><th>Status</th><th>Actions</th></tr></thead>
-    <tbody id="rows"><tr><td colspan="9">Loading…</td></tr></tbody>
-  </table>`;
-  setTimeout(()=>{const rows=document.getElementById('rows');
-    let lastData=[];
+/* ---- Admin with Login Gate ---- */
+function Admin(){
+  const el=document.createElement('div');el.className='card p24';
+  el.innerHTML=`
+    <h2>Admin</h2>
+    <div id="adminAuth"></div>
+    <div id="adminBody" style="display:none"></div>
+  `;
 
-    function paint(data){
-      lastData = Array.isArray(data)?data:[];
-      if(!lastData.length){rows.innerHTML='<tr><td colspan="9">No bookings yet</td></tr>';return;}
-      rows.innerHTML=lastData.map(r=>{
-        const phoneDisp=(r.Phone||'').toString().replace(/^'/,'');
-        const phoneDigits=cleanPhoneForWA(r.Phone);
-        const status=r.Status||'Pending';
-        return `<tr>
-          <td>${r.Timestamp||''}</td>
-          <td>${r.ID||''}</td>
-          <td>${r.Name||''}</td>
-          <td><a target="_blank" href="https://wa.me/${phoneDigits}">${phoneDisp||''}</a></td>
-          <td>${r.Car||''}</td>
-          <td>${r.From||''}</td>
-          <td>${r.To||''}</td>
-          <td><span class="pill ${status==='Approved'?'ok':'pending'}">${status}</span></td>
-          <td>
-            <button class="btn ok" data-act="approve" data-id="${r.ID||''}">Approve</button>
-            <button class="btn secondary" data-act="wa" data-phone="${phoneDigits}">WhatsApp</button>
-          </td>
-        </tr>`;
-      }).join('');
-    }
-    function load(){loadJSONP(SHEET_WEBAPP_URL,paint);}
-    load(); document.getElementById('refresh').onclick=load;
+  setTimeout(()=>{
+    const authEl = document.getElementById('adminAuth');
+    const bodyEl = document.getElementById('adminBody');
 
-    rows.addEventListener('click', async (e)=>{
-      const b=e.target.closest('button'); if(!b) return;
-      const act=b.getAttribute('data-act');
+    const isAuthed = sessionStorage.getItem(ADMIN_SESSION_KEY)==='1';
 
-      if(act==='wa'){
-        const p=b.getAttribute('data-phone');
-        window.open('https://wa.me/'+p,'_blank'); return;
-      }
-      if(act==='approve'){
-        const id=b.getAttribute('data-id');
-        b.disabled=true; b.textContent='Approving…';
-        const ok = await postForm({action:'updateStatus',id,status:'Approved'})
-               || await postViaHiddenForm({action:'updateStatus',id,status:'Approved'});
-        if(ok){
-          const row=lastData.find(r=>(r.ID||'')===id)||{};
-          const phoneDigits=cleanPhoneForWA(row.Phone);
-          if(phoneDigits.length>=7){
-            const msg=encodeURIComponent(buildApprovalMessage(row));
-            window.open(`https://wa.me/${phoneDigits}?text=${msg}`,'_blank');
-          }
-          load();
-        }else{
-          alert('Could not approve — please try again.');
+    function renderLogin(){
+      authEl.style.display='block';
+      bodyEl.style.display='none';
+      authEl.innerHTML = `
+        <p class="muted">Sign in to view bookings.</p>
+        <form id="admForm" class="grid" style="max-width:520px">
+          <div class="col-6">
+            <label for="admUser">Admin ID</label>
+            <input id="admUser" placeholder="username" required />
+          </div>
+          <div class="col-6">
+            <label for="admPass">Password</label>
+            <input id="admPass" type="password" placeholder="••••••••" required />
+          </div>
+          <div class="col-12"><button class="btn" type="submit">Sign in</button></div>
+        </form>
+      `;
+      document.getElementById('admForm').addEventListener('submit', e=>{
+        e.preventDefault();
+        const u = (document.getElementById('admUser').value||'').trim().toLowerCase();
+        const p = (document.getElementById('admPass').value||'').trim();
+        if (u===ADMIN_USER.toLowerCase() && p===ADMIN_PASS){
+          sessionStorage.setItem(ADMIN_SESSION_KEY,'1');
+          renderBody();
+        } else {
+          alert('Invalid credentials');
         }
-        b.disabled=false; b.textContent='Approve';
+      });
+    }
+
+    function renderBody(){
+      authEl.style.display='none';
+      bodyEl.style.display='block';
+      bodyEl.innerHTML = `
+        <h2 style="margin-top:0">Admin — Live Bookings</h2>
+        <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+          <button id="refresh" class="btn secondary">🔄 Refresh</button>
+          <button id="signout" class="btn danger">Sign out</button>
+        </div>
+        <table class="table">
+          <thead><tr><th>Time</th><th>ID</th><th>Name</th><th>Phone</th><th>Car</th><th>From</th><th>To</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="rows"><tr><td colspan="9">Loading…</td></tr></tbody>
+        </table>
+      `;
+
+      const rows=document.getElementById('rows');
+      let lastData=[];
+
+      function paint(data){
+        lastData = Array.isArray(data)?data:[];
+        if(!lastData.length){rows.innerHTML='<tr><td colspan="9">No bookings yet</td></tr>';return;}
+        rows.innerHTML=lastData.map(r=>{
+          const phoneDisp=(r.Phone||'').toString().replace(/^'/,'');
+          const phoneDigits=cleanPhoneForWA(r.Phone);
+          const status=r.Status||'Pending';
+          return `<tr>
+            <td>${r.Timestamp||''}</td>
+            <td>${r.ID||''}</td>
+            <td>${r.Name||''}</td>
+            <td><a target="_blank" href="https://wa.me/${phoneDigits}">${phoneDisp||''}</a></td>
+            <td>${r.Car||''}</td>
+            <td>${r.From||''}</td>
+            <td>${r.To||''}</td>
+            <td><span class="pill ${status==='Approved'?'ok':'pending'}">${status}</span></td>
+            <td>
+              <button class="btn ok" data-act="approve" data-id="${r.ID||''}">Approve</button>
+              <button class="btn secondary" data-act="wa" data-phone="${phoneDigits}">WhatsApp</button>
+            </td>
+          </tr>`;
+        }).join('');
       }
-    });
+
+      function load(){loadJSONP(SHEET_WEBAPP_URL,paint);}
+      load();
+      document.getElementById('refresh').onclick=load;
+      document.getElementById('signout').onclick=()=>{ sessionStorage.removeItem(ADMIN_SESSION_KEY); renderLogin(); };
+
+      rows.addEventListener('click', async (e)=>{
+        const b=e.target.closest('button'); if(!b) return;
+        const act=b.getAttribute('data-act');
+
+        if(act==='wa'){
+          const p=b.getAttribute('data-phone'); window.open('https://wa.me/'+p,'_blank'); return;
+        }
+        if(act==='approve'){
+          const id=b.getAttribute('data-id');
+          b.disabled=true; b.textContent='Approving…';
+          const ok = await postForm({action:'updateStatus',id,status:'Approved'})
+                 || await postViaHiddenForm({action:'updateStatus',id,status:'Approved'});
+          if(ok){
+            const row=lastData.find(r=>(r.ID||'')===id)||{};
+            const phoneDigits=cleanPhoneForWA(row.Phone);
+            if(phoneDigits.length>=7){
+              const msg=encodeURIComponent(buildApprovalMessage(row));
+              window.open(`https://wa.me/${phoneDigits}?text=${msg}`,'_blank');
+            }
+            load();
+          }else{
+            alert('Could not approve — please try again.');
+          }
+          b.disabled=false; b.textContent='Approve';
+        }
+      });
+    }
+
+    if (isAuthed) renderBody(); else renderLogin();
   },0);
+
   return el;
 }
 
