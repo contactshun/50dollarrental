@@ -8,23 +8,41 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{--brand:#0077FF;--accent:#16A34A;--bg:#F5F9FC;--ink:#0F172A;--muted:#64748B;--card:#fff;--ok:#22C55E;--warn:#F87171;--ring:rgba(0,119,255,.35)}
-    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-    a{color:var(--brand);text-decoration:none} .container{max-width:1080px;margin:0 auto;padding:20px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+    a{color:var(--brand);text-decoration:none}
+    .container{max-width:1080px;margin:0 auto;padding:20px}
     header{position:sticky;top:0;background:rgba(246,247,251,.8);backdrop-filter:blur(10px);border-bottom:1px solid #e5e7eb;z-index:10}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}.brand{display:flex;gap:10px;align-items:center}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;gap:10px;align-items:center}
     .logo{width:40px;height:40px;border-radius:12px;background:var(--brand);display:grid;place-items:center;color:#fff;font-weight:800}
-    .brand h1{font-size:18px;margin:0}.links{display:flex;gap:14px;flex-wrap:wrap}.links a{padding:8px 12px;border-radius:10px}
-    .links a.active,.links a:hover{background:#e8efff}.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;margin-top:28px}
-    .card{background:var(--card);border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.04)} .p24{padding:24px}
-    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}.btn{border:1px solid var(--brand);background:var(--brand);color:#fff;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer}
-    .btn.secondary{background:#fff;color:var(--brand)} .btn.ok{background:var(--ok);border-color:var(--ok)} .btn.danger{background:var(--warn);border-color:var(--warn)}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.col-4{grid-column:span 4}.col-6{grid-column:span 6}.col-12{grid-column:span 12}
+    .brand h1{font-size:18px;margin:0}
+    .links{display:flex;gap:14px;flex-wrap:wrap}
+    .links a{padding:8px 12px;border-radius:10px}
+    .links a.active,.links a:hover{background:#e8efff}
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;margin-top:28px}
+    .card{background:var(--card);border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.04)}
+    .p24{padding:24px}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+    .btn{border:1px solid var(--brand);background:var(--brand);color:#fff;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer}
+    .btn.secondary{background:#fff;color:var(--brand)}
+    .btn.ok{background:var(--ok);border-color:var(--ok)}
+    .btn.danger{background:var(--warn);border-color:var(--warn)}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .col-4{grid-column:span 4}.col-6{grid-column:span 6}.col-12{grid-column:span 12}
     @media(max-width:900px){.hero{grid-template-columns:1fr}.col-4,.col-6{grid-column:span 12}}
-    .muted{color:var(--muted)} label{font-weight:600} input,select,textarea{padding:10px 12px;border-radius:12px;border:1px solid #d1d5db;width:100%}
-    input:focus,select:focus,textarea:focus{outline:3px solid var(--ring)} .input-row{display:flex;gap:10px}
-    .table{width:100%;border-collapse:collapse} th,td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left}
-    .pill{padding:4px 8px;border-radius:999px;border:1px solid #e5e7eb}.pill.ok{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}.pill.pending{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
-    footer{text-align:center;margin:40px 0;color:var(--muted)} .note{font-size:12px;color:var(--muted)}
+    .muted{color:var(--muted)}
+    label{font-weight:600}
+    input,select,textarea{padding:10px 12px;border-radius:12px;border:1px solid #d1d5db;width:100%}
+    input:focus,select:focus,textarea:focus{outline:3px solid var(--ring)}
+    .input-row{display:flex;gap:10px}
+    .table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left}
+    .pill{padding:4px 8px;border-radius:999px;border:1px solid #e5e7eb}
+    .pill.ok{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
+    .pill.pending{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+    footer{text-align:center;margin:40px 0;color:var(--muted)}
+    .note{font-size:12px;color:var(--muted)}
   </style>
 </head>
 <body>
@@ -48,34 +66,58 @@
 <footer class="container"><p class="note">© <span id="year"></span> 50DollarRental — synced with Google Sheets.</p></footer>
 
 <script>
-/* ---- CONFIG ---- */
+/* ===== CONFIG ===== */
 const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzBPuvGk7SkiEBHUKDYHVM_SQgE0p6E2qO-rFUGYkUCT4N4Xev9xraEdZzvuh2H5uk6/exec";
 const ADMIN_USER = "shunqinlan";
 const ADMIN_PASS = "Hondacivic2015";
 const ADMIN_SESSION_KEY = "adm_session_ok_v1";
 
-/* ---- Router ---- */
+/* ===== Router ===== */
 const routes={'/':Home,'/cars':Cars,'/book':Book,'/contact':Contact,'/admin':Admin};
-function navigate(){const path=location.hash.slice(1)||'/';const view=routes[path]||NotFound;
+function navigate(){
+  const path=location.hash.slice(1)||'/';
+  const view=routes[path]||NotFound;
   document.querySelectorAll('[data-route]').forEach(a=>a.classList.toggle('active',a.getAttribute('href')===`#${path}`));
   const app=document.getElementById('app');app.innerHTML='';app.appendChild(view());
 }
-addEventListener('hashchange',navigate);addEventListener('load',()=>{document.getElementById('year').textContent=(new Date).getFullYear();navigate();});
+addEventListener('hashchange',navigate);
+addEventListener('load',()=>{document.getElementById('year').textContent=(new Date).getFullYear();navigate();});
 
-/* ---- Data ---- */
-const CARS=[{id:'prius',name:'Toyota Prius',price:50,img:'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1000&auto=format&fit=crop'},
-{id:'cx5',name:'Mazda CX-5',price:50,img:'https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=1000&auto=format&fit=crop'},
-{id:'civic',name:'Honda Civic',price:50,img:'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1000&auto=format&fit=crop'}];
+/* ===== Data ===== */
+const CARS=[
+  {id:'prius',name:'Toyota Prius',price:50,img:'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1000&auto=format&fit=crop'},
+  {id:'cx5',name:'Mazda CX-5',price:50,img:'https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=1000&auto=format&fit=crop'},
+  {id:'civic',name:'Honda Civic',price:50,img:'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1000&auto=format&fit=crop'}
+];
 
-/* ---- Helpers: JSONP + urlencoded POST + hidden-form fallback ---- */
-function loadJSONP(url, cb){const name='cb_'+Math.random().toString(36).slice(2);window[name]=d=>{try{cb(d);}finally{delete window[name];s.remove();}};const s=document.createElement('script');s.src=url+(url.includes('?')?'&':'?')+'callback='+name;document.body.appendChild(s);}
-async function postForm(data){try{const body=new URLSearchParams(data);const r=await fetch(SHEET_WEBAPP_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body});const t=await r.text();if(!r.ok||!t.includes('OK'))throw new Error(t);return true;}catch(e){return false;}}
-function postViaHiddenForm(fields){const sink=document.createElement('iframe');sink.name='gsink';sink.style.display='none';document.body.appendChild(sink);
- const f=document.createElement('form');f.action=SHEET_WEBAPP_URL;f.method='POST';f.target='gsink';Object.entries(fields).forEach(([k,v])=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v??'';f.appendChild(i);});document.body.appendChild(f);f.submit();return new Promise(res=>{sink.onload=()=>{setTimeout(()=>{sink.remove();f.remove();res(true);},200);};});}
+/* ===== Helpers: JSONP + urlencoded POST + hidden-form fallback ===== */
+function loadJSONP(url, cb){
+  const name='cb_'+Math.random().toString(36).slice(2);
+  window[name]=d=>{ try{cb(d);} finally{ delete window[name]; s.remove(); } };
+  const s=document.createElement('script');
+  s.src=url+(url.includes('?')?'&':'?')+'callback='+name;
+  document.body.appendChild(s);
+}
+async function postForm(data){
+  try{
+    const body=new URLSearchParams(data);
+    const r=await fetch(SHEET_WEBAPP_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body});
+    const t=await r.text();
+    if(!r.ok||!t.includes('OK')) throw new Error(t);
+    return true;
+  }catch(e){ return false; }
+}
+function postViaHiddenForm(fields){
+  const sink=document.createElement('iframe');sink.name='gsink';sink.style.display='none';document.body.appendChild(sink);
+  const f=document.createElement('form');f.action=SHEET_WEBAPP_URL;f.method='POST';f.target='gsink';
+  Object.entries(fields).forEach(([k,v])=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v??'';f.appendChild(i);});
+  document.body.appendChild(f);f.submit();
+  return new Promise(res=>{ sink.onload=()=>{ setTimeout(()=>{ sink.remove(); f.remove(); res(true); },200); }; });
+}
 
-/* ---- WhatsApp helpers (for "Approve") ---- */
+/* ===== WhatsApp helpers (used when Approve) ===== */
 function cleanPhoneForWA(raw){return (raw||"").toString().replace(/^'/,"").replace(/\D/g,"");}
-function daysBetween(start,end){if(!start||!end)return 1;const ms=new Date(end)-new Date(start);return Math.max(1,Math.ceil(ms/86400000));}
+function daysBetween(start,end){ if(!start||!end) return 1; const ms=new Date(end)-new Date(start); return Math.max(1,Math.ceil(ms/86400000)); }
 function buildApprovalMessage(row){
   const daily=50; const d=daysBetween(row.From,row.To); const total=d*daily;
   return [
@@ -94,145 +136,156 @@ function buildApprovalMessage(row){
   ].join("\n");
 }
 
-/* ---- Views ---- */
-function Home(){const el=document.createElement('div');el.innerHTML=`
-<section class="hero">
-  <div class="card p24">
-    <h2>Drive more, spend less — $50/day</h2><p class="muted">Transparent pricing, modern cars, instant booking.</p>
-    <div class="cta"><a class="btn" href="#/book">Book now</a><a class="btn secondary" href="#/cars">See cars</a></div>
-  </div>
-  <div class="card p24"><h3>Popular picks</h3>
-    ${CARS.map(c=>`<div style="display:flex;gap:10px;margin-bottom:10px">
-      <img src="${c.img}" alt="${c.name}" style="width:110px;height:70px;object-fit:cover;border-radius:8px;border:1px solid #eee">
-      <div><b>${c.name}</b><div class="muted">$${c.price}/day</div></div></div>`).join('')}
-  </div>
-</section>`;return el;}
-
-function Cars(){const el=document.createElement('div');el.className='grid';
-  CARS.forEach(c=>{const card=document.createElement('div');card.className='card p24 col-4';
-    card.innerHTML=`<img src="${c.img}" alt="${c.name}" style="width:100%;height:150px;object-fit:cover;border-radius:12px">
-    <h3>${c.name}</h3><p class="muted">$${c.price}/day</p><a href="#/book" class="btn secondary">Book ${c.name}</a>`;el.appendChild(card);});
-  return el;}
-
-function Book(){const el=document.createElement('div');el.className='grid';
-  const formCard=document.createElement('div');formCard.className='card p24 col-6';
-  formCard.innerHTML=`
-  <h2>Book your ride</h2>
-  <form id="bookingForm">
-    <label>Car</label>
-    <select id="car">${CARS.map(c=>`<option>${c.name}</option>`).join('')}</select>
-
-    <label>Pick-up Date</label><input type="datetime-local" id="dateFrom" required>
-    <label>Drop-off Date</label><input type="datetime-local" id="dateTo" required>
-
-    <label>Name</label><input id="name" required>
-
-    <label>Phone (WhatsApp)</label>
-    <div class="input-row">
-      <select id="cc" style="max-width:140px">
-        <option value="+1" selected>🇺🇸 +1 (US)</option>
-        <option value="+91">🇮🇳 +91 (IN)</option>
-        <option value="+44">🇬🇧 +44 (UK)</option>
-        <option value="+61">🇦🇺 +61 (AU)</option>
-        <option value="+81">🇯🇵 +81 (JP)</option>
-      </select>
-      <input id="phone" placeholder="555 123 4567" required>
-    </div>
-
-    <label>Pickup Location</label><input id="pickup" placeholder="Ames / DSM airport">
-    <label>Notes</label><textarea id="notes"></textarea>
-    <button class="btn" type="submit">Submit</button>
-  </form>`;
-  el.appendChild(formCard);
-
-  const side=document.createElement('div');side.className='card p24 col-6';
-  side.innerHTML=`<h3>How pricing works</h3><p class="muted">Flat $50/day. Fuel not included. ID required.</p>
-  <hr><p class="muted">Message us directly for faster response.</p>
-  <a class="btn ok" target="_blank" href="https://wa.me/18168001470">Chat on WhatsApp</a>`;
-  el.appendChild(side);
-
-  setTimeout(()=>{document.getElementById('bookingForm').addEventListener('submit', async e=>{
-    e.preventDefault();
-    const fullPhone = (document.getElementById('cc').value + ' ' + document.getElementById('phone').value).trim();
-    const data = {
-      action:'create',
-      id:'BKG-'+Math.random().toString(36).slice(2,8).toUpperCase(),
-      name:document.getElementById('name').value.trim(),
-      phone:fullPhone,
-      carName:document.getElementById('car').value,
-      dateFrom:document.getElementById('dateFrom').value,
-      dateTo:document.getElementById('dateTo').value,
-      pickup:document.getElementById('pickup').value.trim(),
-      notes:document.getElementById('notes').value.trim(),
-      status:'Pending'
-    };
-    const ok = await postForm(data) || await postViaHiddenForm(data);
-    if (ok) { alert('✅ Booking saved! We will contact you shortly.'); /* No redirect to admin */ }
-    else { alert('❌ Could not send. Please try again.'); }
-  });},0);
+/* ===== Views ===== */
+function Home(){
+  const el=document.createElement('div');
+  el.innerHTML=`
+    <section class="hero">
+      <div class="card p24">
+        <h2>Drive more, spend less — $50/day</h2>
+        <p class="muted">Transparent pricing, modern cars, instant booking.</p>
+        <div class="cta">
+          <a class="btn" href="#/book">Book now</a>
+          <a class="btn secondary" href="#/cars">See cars</a>
+        </div>
+      </div>
+      <div class="card p24">
+        <h3>Popular picks</h3>
+        ${CARS.map(c=>`<div style="display:flex;gap:10px;margin-bottom:10px">
+          <img src="${c.img}" alt="${c.name}" style="width:110px;height:70px;object-fit:cover;border-radius:8px;border:1px solid #eee">
+          <div><b>${c.name}</b><div class="muted">$${c.price}/day</div></div>
+        </div>`).join('')}
+      </div>
+    </section>`;
   return el;
 }
 
-function Contact(){const el=document.createElement('div');el.className='grid';
-  const c1=document.createElement('div');c1.className='card p24 col-6';
-  c1.innerHTML=`<h2>Contact us</h2><p class="muted">Quickest reply via WhatsApp or email.</p>
-    <p><b>WhatsApp:</b> <a target="_blank" href="https://wa.me/18168001470">+1 (816) 800-1470</a></p>
-    <p><b>Email:</b> <a href="mailto:50dollarrental@gmail.com">50dollarrental@gmail.com</a></p>`;
-  const c2=document.createElement('div');c2.className='card p24 col-6';
-  c2.innerHTML=`<h3>Service area</h3><p class="muted">Ames & Des Moines, Iowa.</p>
-    <img src="https://images.unsplash.com/photo-1505764706515-aa95265c5abc?q=80&w=1200&auto=format&fit=crop" alt="Ames & Des Moines" style="width:100%;border-radius:12px">`;
-  el.appendChild(c1);el.appendChild(c2);return el;
+function Cars(){
+  const el=document.createElement('div'); el.className='grid';
+  CARS.forEach(c=>{
+    const card=document.createElement('div'); card.className='card p24 col-4';
+    card.innerHTML=`
+      <img src="${c.img}" alt="${c.name}" style="width:100%;height:150px;object-fit:cover;border-radius:12px">
+      <h3>${c.name}</h3>
+      <p class="muted">$${c.price}/day</p>
+      <a href="#/book" class="btn secondary">Book ${c.name}</a>`;
+    el.appendChild(card);
+  });
+  return el;
 }
 
-/* ---- Admin with Login Gate ---- */
-function Admin(){
-  const el=document.createElement('div');el.className='card p24';
-  el.innerHTML=`
-    <h2>Admin</h2>
-    <div id="adminAuth"></div>
-    <div id="adminBody" style="display:none"></div>
-  `;
+function Book(){
+  const el=document.createElement('div'); el.className='grid';
+  const formCard=document.createElement('div'); formCard.className='card p24 col-6';
+  formCard.innerHTML=`
+    <h2>Book your ride</h2>
+    <form id="bookingForm">
+      <label>Car</label>
+      <select id="car">${CARS.map(c=>`<option>${c.name}</option>`).join('')}</select>
+
+      <label>Pick-up Date</label><input type="datetime-local" id="dateFrom" required>
+      <label>Drop-off Date</label><input type="datetime-local" id="dateTo" required>
+
+      <label>Name</label><input id="name" required>
+
+      <label>Phone (WhatsApp)</label>
+      <div class="input-row">
+        <select id="cc" style="max-width:140px">
+          <option value="+1" selected>🇺🇸 +1 (US)</option>
+          <option value="+91">🇮🇳 +91 (IN)</option>
+          <option value="+44">🇬🇧 +44 (UK)</option>
+          <option value="+61">🇦🇺 +61 (AU)</option>
+          <option value="+81">🇯🇵 +81 (JP)</option>
+        </select>
+        <input id="phone" placeholder="555 123 4567" required>
+      </div>
+
+      <label>Pickup Location</label><input id="pickup" placeholder="Ames / DSM airport">
+      <label>Notes</label><textarea id="notes"></textarea>
+      <button class="btn" type="submit">Submit</button>
+    </form>`;
+  el.appendChild(formCard);
+
+  const side=document.createElement('div'); side.className='card p24 col-6';
+  side.innerHTML=`
+    <h3>How pricing works</h3>
+    <p class="muted">Flat $50/day. Fuel not included. ID required.</p>
+    <hr>
+    <p class="muted">Message us directly for faster response.</p>
+    <a class="btn ok" target="_blank" href="https://wa.me/18168001470">Chat on WhatsApp</a>`;
+  el.appendChild(side);
 
   setTimeout(()=>{
-    const authEl = document.getElementById('adminAuth');
-    const bodyEl = document.getElementById('adminBody');
+    document.getElementById('bookingForm').addEventListener('submit', async e=>{
+      e.preventDefault();
+      const fullPhone=(document.getElementById('cc').value+' '+document.getElementById('phone').value).trim();
+      const data={
+        action:'create',
+        id:'BKG-'+Math.random().toString(36).slice(2,8).toUpperCase(),
+        name:document.getElementById('name').value.trim(),
+        phone:fullPhone,
+        carName:document.getElementById('car').value,
+        dateFrom:document.getElementById('dateFrom').value,
+        dateTo:document.getElementById('dateTo').value,
+        pickup:document.getElementById('pickup').value.trim(),
+        notes:document.getElementById('notes').value.trim(),
+        status:'Pending'
+      };
+      const ok = await postForm(data) || await postViaHiddenForm(data);
+      if(ok){ alert('✅ Booking saved! We will contact you shortly.'); }  // no redirect to admin
+      else { alert('❌ Could not send. Please try again.'); }
+    });
+  },0);
+  return el;
+}
 
-    const isAuthed = sessionStorage.getItem(ADMIN_SESSION_KEY)==='1';
+function Contact(){
+  const el=document.createElement('div'); el.className='grid';
+  const c1=document.createElement('div'); c1.className='card p24 col-6';
+  c1.innerHTML=`
+    <h2>Contact us</h2>
+    <p class="muted">Quickest reply via WhatsApp or email.</p>
+    <p><b>WhatsApp:</b> <a target="_blank" href="https://wa.me/18168001470">+1 (816) 800-1470</a></p>
+    <p><b>Email:</b> <a href="mailto:50dollarrental@gmail.com">50dollarrental@gmail.com</a></p>`;
+  const c2=document.createElement('div'); c2.className='card p24 col-6';
+  c2.innerHTML=`
+    <h3>Service area</h3>
+    <p class="muted">Ames & Des Moines, Iowa.</p>
+    <img src="https://images.unsplash.com/photo-1505764706515-aa95265c5abc?q=80&w=1200&auto=format&fit=crop" alt="Ames & Des Moines" style="width:100%;border-radius:12px">`;
+  el.appendChild(c1); el.appendChild(c2); return el;
+}
+
+/* ===== Admin (with login gate) ===== */
+function Admin(){
+  const el=document.createElement('div'); el.className='card p24';
+  el.innerHTML=`<h2>Admin</h2><div id="adminAuth"></div><div id="adminBody" style="display:none"></div>`;
+
+  setTimeout(()=>{
+    const authEl=document.getElementById('adminAuth');
+    const bodyEl=document.getElementById('adminBody');
+    const isAuthed=sessionStorage.getItem(ADMIN_SESSION_KEY)==='1';
 
     function renderLogin(){
-      authEl.style.display='block';
-      bodyEl.style.display='none';
-      authEl.innerHTML = `
+      authEl.style.display='block'; bodyEl.style.display='none';
+      authEl.innerHTML=`
         <p class="muted">Sign in to view bookings.</p>
         <form id="admForm" class="grid" style="max-width:520px">
-          <div class="col-6">
-            <label for="admUser">Admin ID</label>
-            <input id="admUser" placeholder="username" required />
-          </div>
-          <div class="col-6">
-            <label for="admPass">Password</label>
-            <input id="admPass" type="password" placeholder="••••••••" required />
-          </div>
+          <div class="col-6"><label for="admUser">Admin ID</label><input id="admUser" placeholder="username" required></div>
+          <div class="col-6"><label for="admPass">Password</label><input id="admPass" type="password" placeholder="••••••••" required></div>
           <div class="col-12"><button class="btn" type="submit">Sign in</button></div>
-        </form>
-      `;
-      document.getElementById('admForm').addEventListener('submit', e=>{
+        </form>`;
+      document.getElementById('admForm').addEventListener('submit',e=>{
         e.preventDefault();
-        const u = (document.getElementById('admUser').value||'').trim().toLowerCase();
-        const p = (document.getElementById('admPass').value||'').trim();
-        if (u===ADMIN_USER.toLowerCase() && p===ADMIN_PASS){
-          sessionStorage.setItem(ADMIN_SESSION_KEY,'1');
-          renderBody();
-        } else {
-          alert('Invalid credentials');
-        }
+        const u=(document.getElementById('admUser').value||'').trim().toLowerCase();
+        const p=(document.getElementById('admPass').value||'').trim();
+        if(u===ADMIN_USER.toLowerCase() && p===ADMIN_PASS){ sessionStorage.setItem(ADMIN_SESSION_KEY,'1'); renderBody(); }
+        else alert('Invalid credentials');
       });
     }
 
     function renderBody(){
-      authEl.style.display='none';
-      bodyEl.style.display='block';
-      bodyEl.innerHTML = `
+      authEl.style.display='none'; bodyEl.style.display='block';
+      bodyEl.innerHTML=`
         <h2 style="margin-top:0">Admin — Live Bookings</h2>
         <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
           <button id="refresh" class="btn secondary">🔄 Refresh</button>
@@ -241,15 +294,13 @@ function Admin(){
         <table class="table">
           <thead><tr><th>Time</th><th>ID</th><th>Name</th><th>Phone</th><th>Car</th><th>From</th><th>To</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="rows"><tr><td colspan="9">Loading…</td></tr></tbody>
-        </table>
-      `;
+        </table>`;
 
-      const rows=document.getElementById('rows');
-      let lastData=[];
+      const rows=document.getElementById('rows'); let lastData=[];
 
       function paint(data){
-        lastData = Array.isArray(data)?data:[];
-        if(!lastData.length){rows.innerHTML='<tr><td colspan="9">No bookings yet</td></tr>';return;}
+        lastData=Array.isArray(data)?data:[];
+        if(!lastData.length){ rows.innerHTML='<tr><td colspan="9">No bookings yet</td></tr>'; return; }
         rows.innerHTML=lastData.map(r=>{
           const phoneDisp=(r.Phone||'').toString().replace(/^'/,'');
           const phoneDigits=cleanPhoneForWA(r.Phone);
@@ -271,7 +322,7 @@ function Admin(){
         }).join('');
       }
 
-      function load(){loadJSONP(SHEET_WEBAPP_URL,paint);}
+      function load(){ loadJSONP(SHEET_WEBAPP_URL,paint); }
       load();
       document.getElementById('refresh').onclick=load;
       document.getElementById('signout').onclick=()=>{ sessionStorage.removeItem(ADMIN_SESSION_KEY); renderLogin(); };
@@ -280,9 +331,8 @@ function Admin(){
         const b=e.target.closest('button'); if(!b) return;
         const act=b.getAttribute('data-act');
 
-        if(act==='wa'){
-          const p=b.getAttribute('data-phone'); window.open('https://wa.me/'+p,'_blank'); return;
-        }
+        if(act==='wa'){ const p=b.getAttribute('data-phone'); window.open('https://wa.me/'+p,'_blank'); return; }
+
         if(act==='approve'){
           const id=b.getAttribute('data-id');
           b.disabled=true; b.textContent='Approving…';
@@ -304,13 +354,17 @@ function Admin(){
       });
     }
 
-    if (isAuthed) renderBody(); else renderLogin();
+    if(isAuthed) renderBody(); else renderLogin();
   },0);
 
   return el;
 }
 
-function NotFound(){const el=document.createElement('div');el.innerHTML=`<div class="card p24"><h2>404 — Not found</h2><p class="muted">That page doesn’t exist.</p></div>`;return el;}
+function NotFound(){
+  const el=document.createElement('div');
+  el.innerHTML=`<div class="card p24"><h2>404 — Not found</h2><p class="muted">That page doesn’t exist.</p></div>`;
+  return el;
+}
 </script>
 </body>
 </html>
